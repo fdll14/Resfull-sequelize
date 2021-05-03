@@ -57,5 +57,70 @@ module.exports = {
                     err
                 })
             })
+    },
+    deleteFoods: async(req, res) => {
+        let { id } = req.params;
+        let findFoods = await foods.findOne({
+            where: { id }
+        })
+        foods.destroy({
+                where: { id }
+            })
+            .then((data) => {
+                if (data == 1) {
+                    res.status(200).send({
+                        msg: "Delete Success",
+                        status: 200,
+                        data: findFoods
+                    });
+                } else {
+                    res.status(404).send({
+                        msg: "Cant Delete",
+                        status: 404,
+                        data: "Data non found"
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    msg: "Failed Delete Data",
+                    status: 500,
+                    err
+                })
+            })
+
+    },
+    updateFoods: async(req, res) => {
+        let { id } = req.params;
+        let { body } = req;
+        let findFoods = await foods.findOne({
+            where: { id }
+        })
+        foods.update(req.body, {
+                where: { id }
+            })
+            .then(data => {
+                if (data == 1) {
+                    let resObjeck = {...findFoods.datavalues, ...body };
+                    res.status(200).send({
+                        msg: "Update Success",
+                        status: 200,
+                        data: resObjeck
+                    });
+                } else {
+                    res.status(404).send({
+                        msg: "Cant Update",
+                        status: 404,
+                        data: "Data non found"
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    msg: "Failed Update Data",
+                    status: 500,
+                    err
+                })
+            })
     }
 }
